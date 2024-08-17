@@ -1,24 +1,29 @@
-# Use an official Node runtime as a parent image
-FROM node:14-alpine
+# Use an official node image as a parent image
+FROM node:14
 
 # Set the working directory
 WORKDIR /app
 
-# Copy package.json and install dependencies
-COPY package.json /app/package.json
+# Copy the package.json and package-lock.json files
+COPY package*.json ./
+
+# Install dependencies
 RUN npm install
 
-# Copy the rest of the application
-COPY . /app
+# Copy the rest of the application code
+COPY . .
 
-# Build the app
+# Build the React app
 RUN npm run build
 
 # Install serve to serve the build
 RUN npm install -g serve
 
-# Set the command to start the app
-CMD ["serve", "-s", "build"]
+# Set the environment variable to configure serve to use port 5000
+ENV PORT 5000
 
 # Expose the port the app runs on
 EXPOSE 5000
+
+# Command to run the app
+CMD ["serve", "-s", "build"]
